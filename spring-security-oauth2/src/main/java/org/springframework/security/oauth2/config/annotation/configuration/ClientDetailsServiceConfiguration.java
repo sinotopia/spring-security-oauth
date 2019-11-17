@@ -26,24 +26,23 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 /**
  * @author Rob Winch
- * 
  */
 @Configuration
 public class ClientDetailsServiceConfiguration {
 
-	@SuppressWarnings("rawtypes")
-	private ClientDetailsServiceConfigurer configurer = new ClientDetailsServiceConfigurer(new ClientDetailsServiceBuilder());
-	
-	@Bean
-	public ClientDetailsServiceConfigurer clientDetailsServiceConfigurer() {
-		return configurer;
-	}
+    @SuppressWarnings("rawtypes")
+    private ClientDetailsServiceConfigurer configurer = new ClientDetailsServiceConfigurer(new ClientDetailsServiceBuilder());
 
-	@Bean
-	@Lazy
-	@Scope(proxyMode=ScopedProxyMode.INTERFACES)
-	public ClientDetailsService clientDetailsService() throws Exception {
-		return configurer.and().build();
-	}
+    @Bean
+    public ClientDetailsServiceConfigurer clientDetailsServiceConfigurer() {
+        return configurer;
+    }
+
+    @Bean
+    @Lazy
+    @Scope(proxyMode = ScopedProxyMode.INTERFACES)
+    public ClientDetailsService clientDetailsService() throws Exception {
+        return configurer.and().build();
+    }
 
 }

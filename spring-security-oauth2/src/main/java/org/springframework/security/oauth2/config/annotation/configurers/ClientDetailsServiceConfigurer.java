@@ -25,37 +25,37 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 
 /**
  * @author Rob Winch
- * 
  */
 public class ClientDetailsServiceConfigurer extends
-		SecurityConfigurerAdapter<ClientDetailsService, ClientDetailsServiceBuilder<?>> {
+        SecurityConfigurerAdapter<ClientDetailsService, ClientDetailsServiceBuilder<?>> {
 
-	public ClientDetailsServiceConfigurer(ClientDetailsServiceBuilder<?> builder) {
-		setBuilder(builder);
-	}
+    public ClientDetailsServiceConfigurer(ClientDetailsServiceBuilder<?> builder) {
+        setBuilder(builder);
+    }
 
-	public ClientDetailsServiceBuilder<?> withClientDetails(ClientDetailsService clientDetailsService) throws Exception {
-		setBuilder(getBuilder().clients(clientDetailsService));
-		return this.and();
-	}
+    public ClientDetailsServiceBuilder<?> withClientDetails(ClientDetailsService clientDetailsService) throws Exception {
+        setBuilder(getBuilder().clients(clientDetailsService));
+        return this.and();
+    }
 
-	public InMemoryClientDetailsServiceBuilder inMemory() throws Exception {
-		InMemoryClientDetailsServiceBuilder next = getBuilder().inMemory();
-		setBuilder(next);
-		return next;
-	}
-	public JdbcClientDetailsServiceBuilder jdbc(DataSource dataSource) throws Exception {
-		JdbcClientDetailsServiceBuilder next = getBuilder().jdbc().dataSource(dataSource);
-		setBuilder(next);
-		return next;
-	}
-	
-	@Override
-	public void init(ClientDetailsServiceBuilder<?> builder) throws Exception {
-	}
+    public InMemoryClientDetailsServiceBuilder inMemory() throws Exception {
+        InMemoryClientDetailsServiceBuilder next = getBuilder().inMemory();
+        setBuilder(next);
+        return next;
+    }
 
-	@Override
-	public void configure(ClientDetailsServiceBuilder<?> builder) throws Exception {
-	}
+    public JdbcClientDetailsServiceBuilder jdbc(DataSource dataSource) throws Exception {
+        JdbcClientDetailsServiceBuilder next = getBuilder().jdbc().dataSource(dataSource);
+        setBuilder(next);
+        return next;
+    }
+
+    @Override
+    public void init(ClientDetailsServiceBuilder<?> builder) throws Exception {
+    }
+
+    @Override
+    public void configure(ClientDetailsServiceBuilder<?> builder) throws Exception {
+    }
 
 }
