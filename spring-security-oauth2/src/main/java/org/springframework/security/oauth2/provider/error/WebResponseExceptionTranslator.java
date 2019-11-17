@@ -19,11 +19,11 @@ import org.springframework.http.ResponseEntity;
 
 /**
  * Translates exceptions into HTTP Responses.
- * 
+ *
  * @param <T> The error model that will be used as the HTTP Response body.
  */
 public interface WebResponseExceptionTranslator<T> {
-	
-	ResponseEntity<T> translate(Exception e) throws Exception;
+
+    ResponseEntity<T> translate(Exception e) throws Exception;
 
 }

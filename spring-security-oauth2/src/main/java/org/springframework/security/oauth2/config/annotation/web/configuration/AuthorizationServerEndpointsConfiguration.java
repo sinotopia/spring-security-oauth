@@ -100,7 +100,6 @@ public class AuthorizationServerEndpointsConfiguration {
 		authorizationEndpoint.setRedirectResolver(redirectResolver());
 		return authorizationEndpoint;
 	}
-
 	@Bean
 	public TokenEndpoint tokenEndpoint() throws Exception {
 		TokenEndpoint tokenEndpoint = new TokenEndpoint();

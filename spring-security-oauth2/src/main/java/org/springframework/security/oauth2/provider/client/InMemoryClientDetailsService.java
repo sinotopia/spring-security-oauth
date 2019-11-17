@@ -31,18 +31,19 @@ import org.springframework.security.oauth2.provider.NoSuchClientException;
  */
 public class InMemoryClientDetailsService implements ClientDetailsService {
 
-  private Map<String, ClientDetails> clientDetailsStore = new HashMap<String, ClientDetails>();
+    private Map<String, ClientDetails> clientDetailsStore = new HashMap<String, ClientDetails>();
 
-  public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-    ClientDetails details = clientDetailsStore.get(clientId);
-    if (details == null) {
-      throw new NoSuchClientException("No client with requested id: " + clientId);
+    @Override
+    public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
+        ClientDetails details = clientDetailsStore.get(clientId);
+        if (details == null) {
+            throw new NoSuchClientException("No client with requested id: " + clientId);
+        }
+        return details;
     }
-    return details;
-  }
 
-  public void setClientDetailsStore(Map<String, ? extends ClientDetails> clientDetailsStore) {
-    this.clientDetailsStore = new HashMap<String, ClientDetails>(clientDetailsStore);
-  }
+    public void setClientDetailsStore(Map<String, ? extends ClientDetails> clientDetailsStore) {
+        this.clientDetailsStore = new HashMap<String, ClientDetails>(clientDetailsStore);
+    }
 
 }
