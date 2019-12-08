@@ -13,6 +13,10 @@
 
 package org.springframework.security.oauth2.provider.token.store;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.Resource;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyFactory;
@@ -22,67 +26,59 @@ import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.RSAPublicKeySpec;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.core.io.Resource;
-
 /**
  * Factory for RSA key pairs from a JKS keystore file. User provides a {@link Resource} location of a keystore file and
  * the password to unlock it, and the factory grabs the keypairs from the store by name (and optionally password).
- * 
- * @author Dave Syer
  *
+ * @author Dave Syer
  */
 public class KeyStoreKeyFactory {
-	
-	private static final Log logger = LogFactory.getLog(KeyStoreKeyFactory.class);
 
-	private Resource resource;
+    private static final Log logger = LogFactory.getLog(KeyStoreKeyFactory.class);
 
-	private char[] password;
+    private Resource resource;
 
-	private KeyStore store;
+    private char[] password;
 
-	private Object lock = new Object();
+    private KeyStore store;
 
-	public KeyStoreKeyFactory(Resource resource, char[] password) {
-		this.resource = resource;
-		this.password = password;
-	}
+    private Object lock = new Object();
 
-	public KeyPair getKeyPair(String alias) {
-		return getKeyPair(alias, password);
-	}
+    public KeyStoreKeyFactory(Resource resource, char[] password) {
+        this.resource = resource;
+        this.password = password;
+    }
 
-	public KeyPair getKeyPair(String alias, char[] password) {
-		InputStream inputStream = null;
-		try {
-			synchronized (lock) {
-				if (store == null) {
-					synchronized (lock) {
-						store = KeyStore.getInstance("jks");
-						inputStream = resource.getInputStream();
-						store.load(inputStream, this.password);
-					}
-				}
-			}
-			RSAPrivateCrtKey key = (RSAPrivateCrtKey) store.getKey(alias, password);
-			RSAPublicKeySpec spec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
-			PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(spec);
-			return new KeyPair(publicKey, key);
-		}
-		catch (Exception e) {
-			throw new IllegalStateException("Cannot load keys from store: " + resource, e);
-		}
-		finally {
-			try {
-				if (inputStream != null) {
-					inputStream.close();
-				}
-			} 
-			catch (IOException e) {
-				logger.warn("Cannot close open stream: ", e);
-			}
-		}
-	}
+    public KeyPair getKeyPair(String alias) {
+        return getKeyPair(alias, password);
+    }
+
+    public KeyPair getKeyPair(String alias, char[] password) {
+        InputStream inputStream = null;
+        try {
+            synchronized (lock) {
+                if (store == null) {
+                    synchronized (lock) {
+                        store = KeyStore.getInstance("jks");
+                        inputStream = resource.getInputStream();
+                        store.load(inputStream, this.password);
+                    }
+                }
+            }
+            RSAPrivateCrtKey key = (RSAPrivateCrtKey) store.getKey(alias, password);
+            RSAPublicKeySpec spec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
+            PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(spec);
+            return new KeyPair(publicKey, key);
+        } catch (Exception e) {
+            throw new IllegalStateException("Cannot load keys from store: " + resource, e);
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                logger.warn("Cannot close open stream: ", e);
+            }
+        }
+    }
 }

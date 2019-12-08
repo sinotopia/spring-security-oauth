@@ -45,6 +45,7 @@ public class AbstractEndpoint implements InitializingBean {
 
     private OAuth2RequestFactory defaultOAuth2RequestFactory;
 
+    @Override
     public void afterPropertiesSet() throws Exception {
         Assert.state(tokenGranter != null, "TokenGranter must be provided");
         Assert.state(clientDetailsService != null, "ClientDetailsService must be provided");

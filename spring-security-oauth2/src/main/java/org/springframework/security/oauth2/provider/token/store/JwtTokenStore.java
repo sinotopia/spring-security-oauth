@@ -45,7 +45,7 @@ public class JwtTokenStore implements TokenStore {
     /**
      * Create a JwtTokenStore with this token enhancer (should be shared with the DefaultTokenServices if used).
      *
-     * @param jwtTokenEnhancer
+     * @param jwtTokenEnhancer jwtTokenEnhancer
      */
     public JwtTokenStore(JwtAccessTokenConverter jwtTokenEnhancer) {
         this.jwtTokenEnhancer = jwtTokenEnhancer;

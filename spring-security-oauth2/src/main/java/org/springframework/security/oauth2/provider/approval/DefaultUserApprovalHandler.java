@@ -47,6 +47,7 @@ public class DefaultUserApprovalHandler implements UserApprovalHandler {
      * @param userAuthentication   the current user authentication
      * @return Whether the specified request has been approved by the current user.
      */
+    @Override
     public boolean isApproved(AuthorizationRequest authorizationRequest, Authentication userAuthentication) {
         if (authorizationRequest.isApproved()) {
             return true;

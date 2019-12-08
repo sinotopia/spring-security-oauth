@@ -13,10 +13,6 @@
 
 package org.springframework.security.oauth2.provider.token;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +20,10 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.util.StringUtils;
+
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Default implementation of {@link UserAuthenticationConverter}. Converts to and from an Authentication using only its
@@ -58,6 +58,7 @@ public class DefaultUserAuthenticationConverter implements UserAuthenticationCon
                 .arrayToCommaDelimitedString(defaultAuthorities));
     }
 
+    @Override
     public Map<String, ?> convertUserAuthentication(Authentication authentication) {
         Map<String, Object> response = new LinkedHashMap<String, Object>();
         response.put(USERNAME, authentication.getName());
@@ -67,6 +68,7 @@ public class DefaultUserAuthenticationConverter implements UserAuthenticationCon
         return response;
     }
 
+    @Override
     public Authentication extractAuthentication(Map<String, ?> map) {
         if (map.containsKey(USERNAME)) {
             Object principal = map.get(USERNAME);

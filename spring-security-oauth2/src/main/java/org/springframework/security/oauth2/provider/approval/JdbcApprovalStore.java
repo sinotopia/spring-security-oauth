@@ -40,9 +40,9 @@ import static org.springframework.security.oauth2.provider.approval.Approval.App
  */
 public class JdbcApprovalStore implements ApprovalStore {
 
-    private final JdbcTemplate jdbcTemplate;
-
     private final Log logger = LogFactory.getLog(getClass());
+
+    private final JdbcTemplate jdbcTemplate;
 
     private final RowMapper<Approval> rowMapper = new AuthorizationRowMapper();
 

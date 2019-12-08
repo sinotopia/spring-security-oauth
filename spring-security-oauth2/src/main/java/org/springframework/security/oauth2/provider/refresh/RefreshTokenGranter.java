@@ -26,25 +26,24 @@ import org.springframework.security.oauth2.provider.token.AuthorizationServerTok
 
 /**
  * @author Dave Syer
- * 
  */
 public class RefreshTokenGranter extends AbstractTokenGranter {
 
-	private static final String GRANT_TYPE = "refresh_token";
+    private static final String GRANT_TYPE = "refresh_token";
 
-	public RefreshTokenGranter(AuthorizationServerTokenServices tokenServices, ClientDetailsService clientDetailsService, OAuth2RequestFactory requestFactory) {
-		this(tokenServices, clientDetailsService, requestFactory, GRANT_TYPE);
-	}
+    public RefreshTokenGranter(AuthorizationServerTokenServices tokenServices, ClientDetailsService clientDetailsService, OAuth2RequestFactory requestFactory) {
+        this(tokenServices, clientDetailsService, requestFactory, GRANT_TYPE);
+    }
 
-	protected RefreshTokenGranter(AuthorizationServerTokenServices tokenServices, ClientDetailsService clientDetailsService,
-			OAuth2RequestFactory requestFactory, String grantType) {
-		super(tokenServices, clientDetailsService, requestFactory, grantType);
-	}
-	
-	@Override
-	protected OAuth2AccessToken getAccessToken(ClientDetails client, TokenRequest tokenRequest) {
-		String refreshToken = tokenRequest.getRequestParameters().get("refresh_token");
-		return getTokenServices().refreshAccessToken(refreshToken, tokenRequest);
-	}
-	
+    protected RefreshTokenGranter(AuthorizationServerTokenServices tokenServices, ClientDetailsService clientDetailsService,
+                                  OAuth2RequestFactory requestFactory, String grantType) {
+        super(tokenServices, clientDetailsService, requestFactory, grantType);
+    }
+
+    @Override
+    protected OAuth2AccessToken getAccessToken(ClientDetails client, TokenRequest tokenRequest) {
+        String refreshToken = tokenRequest.getRequestParameters().get("refresh_token");
+        return getTokenServices().refreshAccessToken(refreshToken, tokenRequest);
+    }
+
 }

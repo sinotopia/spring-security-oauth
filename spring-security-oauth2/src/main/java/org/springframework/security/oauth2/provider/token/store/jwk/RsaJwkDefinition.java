@@ -18,46 +18,45 @@ package org.springframework.security.oauth2.provider.token.store.jwk;
 /**
  * A JSON Web Key (JWK) representation of a RSA key.
  *
+ * @author Joe Grandja
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7517">JSON Web Key (JWK)</a>
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7518#page-30">JSON Web Algorithms (JWA)</a>
- *
- * @author Joe Grandja
  */
 final class RsaJwkDefinition extends JwkDefinition {
-	private final String modulus;
-	private final String exponent;
+    private final String modulus;
+    private final String exponent;
 
-	/**
-	 * Creates an instance of a RSA JSON Web Key (JWK).
-	 *
-	 * @param keyId the Key ID
-	 * @param publicKeyUse the intended use of the Public Key
-	 * @param algorithm the algorithm intended to be used
-	 * @param modulus the modulus value for the Public Key
-	 * @param exponent the exponent value for the Public Key
-	 */
-	RsaJwkDefinition(String keyId,
-					 PublicKeyUse publicKeyUse,
-					 CryptoAlgorithm algorithm,
-					 String modulus,
-					 String exponent) {
+    /**
+     * Creates an instance of a RSA JSON Web Key (JWK).
+     *
+     * @param keyId        the Key ID
+     * @param publicKeyUse the intended use of the Public Key
+     * @param algorithm    the algorithm intended to be used
+     * @param modulus      the modulus value for the Public Key
+     * @param exponent     the exponent value for the Public Key
+     */
+    RsaJwkDefinition(String keyId,
+                     PublicKeyUse publicKeyUse,
+                     CryptoAlgorithm algorithm,
+                     String modulus,
+                     String exponent) {
 
-		super(keyId, KeyType.RSA, publicKeyUse, algorithm);
-		this.modulus = modulus;
-		this.exponent = exponent;
-	}
+        super(keyId, KeyType.RSA, publicKeyUse, algorithm);
+        this.modulus = modulus;
+        this.exponent = exponent;
+    }
 
-	/**
-	 * @return the modulus value for the Public Key
-	 */
-	String getModulus() {
-		return this.modulus;
-	}
+    /**
+     * @return the modulus value for the Public Key
+     */
+    String getModulus() {
+        return this.modulus;
+    }
 
-	/**
-	 * @return the exponent value for the Public Key
-	 */
-	String getExponent() {
-		return this.exponent;
-	}
+    /**
+     * @return the exponent value for the Public Key
+     */
+    String getExponent() {
+        return this.exponent;
+    }
 }

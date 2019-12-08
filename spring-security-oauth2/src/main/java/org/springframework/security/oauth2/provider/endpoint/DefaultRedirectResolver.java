@@ -69,6 +69,7 @@ public class DefaultRedirectResolver implements RedirectResolver {
         this.redirectGrantTypes = new HashSet<String>(redirectGrantTypes);
     }
 
+    @Override
     public String resolveRedirect(String requestedRedirect, ClientDetails client) throws OAuth2Exception {
 
         Set<String> authorizedGrantTypes = client.getAuthorizedGrantTypes();
@@ -127,7 +128,6 @@ public class DefaultRedirectResolver implements RedirectResolver {
 
         return schemeMatch && userInfoMatch && hostMatch && portMatch && pathMatch && queryParamMatch;
     }
-
 
     /**
      * Checks whether the registered redirect uri query params key and values contains match the requested set

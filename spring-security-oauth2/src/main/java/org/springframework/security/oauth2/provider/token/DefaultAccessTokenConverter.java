@@ -12,15 +12,6 @@
  */
 package org.springframework.security.oauth2.provider.token;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -28,6 +19,8 @@ import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
+
+import java.util.*;
 
 /**
  * Default implementation of {@link AccessTokenConverter}.
@@ -83,6 +76,7 @@ public class DefaultAccessTokenConverter implements AccessTokenConverter {
         this.clientIdAttribute = clientIdAttribute;
     }
 
+    @Override
     public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
         Map<String, Object> response = new HashMap<String, Object>();
         OAuth2Request clientToken = authentication.getOAuth2Request();
@@ -120,6 +114,7 @@ public class DefaultAccessTokenConverter implements AccessTokenConverter {
         return response;
     }
 
+    @Override
     public OAuth2AccessToken extractAccessToken(String value, Map<String, ?> map) {
         DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken(value);
         Map<String, Object> info = new HashMap<String, Object>(map);
@@ -138,6 +133,7 @@ public class DefaultAccessTokenConverter implements AccessTokenConverter {
         return token;
     }
 
+    @Override
     public OAuth2Authentication extractAuthentication(Map<String, ?> map) {
         Map<String, String> parameters = new HashMap<String, String>();
         Set<String> scope = extractScope(map);

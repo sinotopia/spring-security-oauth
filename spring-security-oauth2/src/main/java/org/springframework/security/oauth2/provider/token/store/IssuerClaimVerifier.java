@@ -27,25 +27,25 @@ import java.util.Map;
  * JWT Claims Set against the <code>issuer</code> supplied to the constructor.
  *
  * @author Joe Grandja
- * @since 2.2
  * @see JwtClaimsSetVerifier
+ * @since 2.2
  */
 public class IssuerClaimVerifier implements JwtClaimsSetVerifier {
-	private static final String ISS_CLAIM = "iss";
-	private final URL issuer;
+    private static final String ISS_CLAIM = "iss";
+    private final URL issuer;
 
-	public IssuerClaimVerifier(URL issuer) {
-		Assert.notNull(issuer, "issuer cannot be null");
-		this.issuer = issuer;
-	}
+    public IssuerClaimVerifier(URL issuer) {
+        Assert.notNull(issuer, "issuer cannot be null");
+        this.issuer = issuer;
+    }
 
-	@Override
-	public void verify(Map<String, Object> claims) throws InvalidTokenException {
-		if (!CollectionUtils.isEmpty(claims) && claims.containsKey(ISS_CLAIM)) {
-			String jwtIssuer = (String)claims.get(ISS_CLAIM);
-			if (!jwtIssuer.equals(this.issuer.toString())) {
-				throw new InvalidTokenException("Invalid Issuer (iss) claim: " + jwtIssuer);
-			}
-		}
-	}
+    @Override
+    public void verify(Map<String, Object> claims) throws InvalidTokenException {
+        if (!CollectionUtils.isEmpty(claims) && claims.containsKey(ISS_CLAIM)) {
+            String jwtIssuer = (String) claims.get(ISS_CLAIM);
+            if (!jwtIssuer.equals(this.issuer.toString())) {
+                throw new InvalidTokenException("Invalid Issuer (iss) claim: " + jwtIssuer);
+            }
+        }
+    }
 }

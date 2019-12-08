@@ -37,7 +37,7 @@ import static org.springframework.security.oauth2.provider.token.store.jwk.JwkAt
  * the matching {@link JwkDefinition} using the value of the JWT header parameter <b>&quot;kid&quot;</b>.
  * <br>
  * <br>
- *
+ * <p>
  * The JWS is verified in the following step sequence:
  * <br>
  * <br>
@@ -57,6 +57,7 @@ import static org.springframework.security.oauth2.provider.token.store.jwk.JwkAt
  * <br>
  * <br>
  *
+ * @author Joe Grandja
  * @see JwtAccessTokenConverter
  * @see JwtHeaderConverter
  * @see JwkDefinitionSource
@@ -65,80 +66,78 @@ import static org.springframework.security.oauth2.provider.token.store.jwk.JwkAt
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7517">JSON Web Key (JWK)</a>
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7519">JSON Web Token (JWT)</a>
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7515">JSON Web Signature (JWS)</a>
- *
- * @author Joe Grandja
  */
 class JwkVerifyingJwtAccessTokenConverter extends JwtAccessTokenConverter {
-	private final JwkDefinitionSource jwkDefinitionSource;
-	private final JwtHeaderConverter jwtHeaderConverter = new JwtHeaderConverter();
-	private final JsonParser jsonParser = JsonParserFactory.create();
+    private final JwkDefinitionSource jwkDefinitionSource;
+    private final JwtHeaderConverter jwtHeaderConverter = new JwtHeaderConverter();
+    private final JsonParser jsonParser = JsonParserFactory.create();
 
-	/**
-	 * Creates a new instance using the provided {@link JwkDefinitionSource}
-	 * as the primary source for looking up {@link JwkDefinition}(s).
-	 *
-	 * @param jwkDefinitionSource the source for {@link JwkDefinition}(s)
-	 */
-	JwkVerifyingJwtAccessTokenConverter(JwkDefinitionSource jwkDefinitionSource) {
-		this.jwkDefinitionSource = jwkDefinitionSource;
-	}
+    /**
+     * Creates a new instance using the provided {@link JwkDefinitionSource}
+     * as the primary source for looking up {@link JwkDefinition}(s).
+     *
+     * @param jwkDefinitionSource the source for {@link JwkDefinition}(s)
+     */
+    JwkVerifyingJwtAccessTokenConverter(JwkDefinitionSource jwkDefinitionSource) {
+        this.jwkDefinitionSource = jwkDefinitionSource;
+    }
 
-	/**
-	 * Decodes and validates the supplied JWT followed by signature verification
-	 * before returning the Claims from the JWT Payload.
-	 *
-	 * @param token the JSON Web Token
-	 * @return a <code>Map</code> of the JWT Claims
-	 * @throws JwkException if the JWT is invalid or if the JWS could not be verified
-	 */
-	@Override
-	protected Map<String, Object> decode(String token) {
-		Map<String, String> headers = this.jwtHeaderConverter.convert(token);
+    /**
+     * Decodes and validates the supplied JWT followed by signature verification
+     * before returning the Claims from the JWT Payload.
+     *
+     * @param token the JSON Web Token
+     * @return a <code>Map</code> of the JWT Claims
+     * @throws JwkException if the JWT is invalid or if the JWS could not be verified
+     */
+    @Override
+    protected Map<String, Object> decode(String token) {
+        Map<String, String> headers = this.jwtHeaderConverter.convert(token);
 
-		// Validate "kid" header
-		String keyIdHeader = headers.get(KEY_ID);
-		if (keyIdHeader == null) {
-			throw new InvalidTokenException("Invalid JWT/JWS: " + KEY_ID + " is a required JOSE Header");
-		}
-		JwkDefinitionSource.JwkDefinitionHolder jwkDefinitionHolder = this.jwkDefinitionSource.getDefinitionLoadIfNecessary(keyIdHeader);
-		if (jwkDefinitionHolder == null) {
-			throw new InvalidTokenException("Invalid JOSE Header " + KEY_ID + " (" + keyIdHeader + ")");
-		}
+        // Validate "kid" header
+        String keyIdHeader = headers.get(KEY_ID);
+        if (keyIdHeader == null) {
+            throw new InvalidTokenException("Invalid JWT/JWS: " + KEY_ID + " is a required JOSE Header");
+        }
+        JwkDefinitionSource.JwkDefinitionHolder jwkDefinitionHolder = this.jwkDefinitionSource.getDefinitionLoadIfNecessary(keyIdHeader);
+        if (jwkDefinitionHolder == null) {
+            throw new InvalidTokenException("Invalid JOSE Header " + KEY_ID + " (" + keyIdHeader + ")");
+        }
 
-		JwkDefinition jwkDefinition = jwkDefinitionHolder.getJwkDefinition();
-		// Validate "alg" header
-		String algorithmHeader = headers.get(ALGORITHM);
-		if (algorithmHeader == null) {
-			throw new InvalidTokenException("Invalid JWT/JWS: " + ALGORITHM + " is a required JOSE Header");
-		}
-		if (jwkDefinition.getAlgorithm() != null && !algorithmHeader.equals(jwkDefinition.getAlgorithm().headerParamValue())) {
-			throw new InvalidTokenException("Invalid JOSE Header " + ALGORITHM + " (" + algorithmHeader + ")" +
-					" does not match algorithm associated to JWK with " + KEY_ID + " (" + keyIdHeader + ")");
-		}
+        JwkDefinition jwkDefinition = jwkDefinitionHolder.getJwkDefinition();
+        // Validate "alg" header
+        String algorithmHeader = headers.get(ALGORITHM);
+        if (algorithmHeader == null) {
+            throw new InvalidTokenException("Invalid JWT/JWS: " + ALGORITHM + " is a required JOSE Header");
+        }
+        if (jwkDefinition.getAlgorithm() != null && !algorithmHeader.equals(jwkDefinition.getAlgorithm().headerParamValue())) {
+            throw new InvalidTokenException("Invalid JOSE Header " + ALGORITHM + " (" + algorithmHeader + ")" +
+                    " does not match algorithm associated to JWK with " + KEY_ID + " (" + keyIdHeader + ")");
+        }
 
-		// Verify signature
-		SignatureVerifier verifier = jwkDefinitionHolder.getSignatureVerifier();
-		Jwt jwt = JwtHelper.decode(token);
-		jwt.verifySignature(verifier);
+        // Verify signature
+        SignatureVerifier verifier = jwkDefinitionHolder.getSignatureVerifier();
+        Jwt jwt = JwtHelper.decode(token);
+        jwt.verifySignature(verifier);
 
-		Map<String, Object> claims = this.jsonParser.parseMap(jwt.getClaims());
-		if (claims.containsKey(EXP) && claims.get(EXP) instanceof Integer) {
-			Integer expiryInt = (Integer) claims.get(EXP);
-			claims.put(EXP, new Long(expiryInt));
-		}
-		this.getJwtClaimsSetVerifier().verify(claims);
+        Map<String, Object> claims = this.jsonParser.parseMap(jwt.getClaims());
+        if (claims.containsKey(EXP) && claims.get(EXP) instanceof Integer) {
+            Integer expiryInt = (Integer) claims.get(EXP);
+            claims.put(EXP, new Long(expiryInt));
+        }
+        this.getJwtClaimsSetVerifier().verify(claims);
 
-		return claims;
-	}
+        return claims;
+    }
 
-	/**
-	 * This operation (JWT signing) is not supported and if called,
-	 * will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException
-	 */
-	@Override
-	protected String encode(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-		throw new JwkException("JWT signing (JWS) is not supported.");
-	}
+    /**
+     * This operation (JWT signing) is not supported and if called,
+     * will throw a {@link JwkException}.
+     *
+     * @throws JwkException
+     */
+    @Override
+    protected String encode(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+        throw new JwkException("JWT signing (JWS) is not supported.");
+    }
 }

@@ -14,10 +14,9 @@
 
 package org.springframework.security.oauth2.provider.authentication;
 
-import java.io.Serializable;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.Serializable;
 
 /**
  * A holder of selected HTTP details related to an OAuth2 authentication request.
@@ -43,7 +42,6 @@ public class OAuth2AuthenticationDetails implements Serializable {
     private final String display;
 
     private Object decodedDetails;
-
 
     /**
      * Records the access token value and remote address and will also set the session Id if a session already exists

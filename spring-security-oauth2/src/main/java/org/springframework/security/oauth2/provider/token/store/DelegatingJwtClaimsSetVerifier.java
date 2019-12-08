@@ -28,21 +28,21 @@ import java.util.Map;
  * to it's internal <code>List</code> of {@link JwtClaimsSetVerifier}'s.
  *
  * @author Joe Grandja
- * @since 2.2
  * @see JwtClaimsSetVerifier
+ * @since 2.2
  */
 public class DelegatingJwtClaimsSetVerifier implements JwtClaimsSetVerifier {
-	private final List<JwtClaimsSetVerifier> jwtClaimsSetVerifiers;
+    private final List<JwtClaimsSetVerifier> jwtClaimsSetVerifiers;
 
-	public DelegatingJwtClaimsSetVerifier(List<JwtClaimsSetVerifier> jwtClaimsSetVerifiers) {
-		Assert.notEmpty(jwtClaimsSetVerifiers, "jwtClaimsSetVerifiers cannot be empty");
-		this.jwtClaimsSetVerifiers = Collections.unmodifiableList(new ArrayList<JwtClaimsSetVerifier>(jwtClaimsSetVerifiers));
-	}
+    public DelegatingJwtClaimsSetVerifier(List<JwtClaimsSetVerifier> jwtClaimsSetVerifiers) {
+        Assert.notEmpty(jwtClaimsSetVerifiers, "jwtClaimsSetVerifiers cannot be empty");
+        this.jwtClaimsSetVerifiers = Collections.unmodifiableList(new ArrayList<JwtClaimsSetVerifier>(jwtClaimsSetVerifiers));
+    }
 
-	@Override
-	public void verify(Map<String, Object> claims) throws InvalidTokenException {
-		for (JwtClaimsSetVerifier jwtClaimsSetVerifier : this.jwtClaimsSetVerifiers) {
-			jwtClaimsSetVerifier.verify(claims);
-		}
-	}
+    @Override
+    public void verify(Map<String, Object> claims) throws InvalidTokenException {
+        for (JwtClaimsSetVerifier jwtClaimsSetVerifier : this.jwtClaimsSetVerifiers) {
+            jwtClaimsSetVerifier.verify(claims);
+        }
+    }
 }

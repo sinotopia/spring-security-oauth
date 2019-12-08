@@ -70,6 +70,7 @@ import java.util.*;
 @FrameworkEndpoint
 @SessionAttributes({AuthorizationEndpoint.AUTHORIZATION_REQUEST_ATTR_NAME, AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST_ATTR_NAME})
 public class AuthorizationEndpoint extends AbstractEndpoint {
+
     static final String AUTHORIZATION_REQUEST_ATTR_NAME = "authorizationRequest";
 
     static final String ORIGINAL_AUTHORIZATION_REQUEST_ATTR_NAME = "org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint.ORIGINAL_AUTHORIZATION_REQUEST";

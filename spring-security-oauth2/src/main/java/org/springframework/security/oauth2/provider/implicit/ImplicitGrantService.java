@@ -21,7 +21,8 @@ public interface ImplicitGrantService {
      * @param originalRequest
      * @param tokenRequest
      */
-    public void store(OAuth2Request originalRequest, TokenRequest tokenRequest);
+
+    void store(OAuth2Request originalRequest, TokenRequest tokenRequest);
 
     /**
      * Look up and return the OAuth2Request associated with the given TokenRequest.
@@ -29,6 +30,6 @@ public interface ImplicitGrantService {
      * @param tokenRequest
      * @return
      */
-    public OAuth2Request remove(TokenRequest tokenRequest);
+    OAuth2Request remove(TokenRequest tokenRequest);
 
 }

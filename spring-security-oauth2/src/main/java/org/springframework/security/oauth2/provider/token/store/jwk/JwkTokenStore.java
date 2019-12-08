@@ -33,7 +33,7 @@ import java.util.List;
  * JSON Web Signature (JWS) for a JSON Web Token (JWT) using a JSON Web Key (JWK).
  * <br>
  * <br>
- *
+ * <p>
  * This {@link TokenStore} implementation is <b>exclusively</b> meant to be used by a <b>Resource Server</b> as
  * it's sole responsibility is to decode a JWT and verify it's signature (JWS) using the corresponding JWK.
  * <br>
@@ -45,7 +45,7 @@ import java.util.List;
  * {@link JwkException} reporting <i>&quot;This operation is not supported&quot;</i>.
  * <br>
  * <br>
- *
+ * <p>
  * The unsupported operations are as follows:
  * <ul>
  *     <li>{@link #storeAccessToken(OAuth2AccessToken, OAuth2Authentication)}</li>
@@ -60,14 +60,14 @@ import java.util.List;
  *     <li>{@link #findTokensByClientId(String)}</li>
  * </ul>
  * <br>
- *
+ * <p>
  * This implementation delegates to an internal instance of a {@link JwtTokenStore} which uses a
  * specialized extension of {@link JwtAccessTokenConverter}.
  * This specialized {@link JwtAccessTokenConverter} is capable of fetching (and caching)
  * the JWK Set (a set of JWKs) from the URL supplied to the constructor of this implementation.
  * <br>
  * <br>
- *
+ * <p>
  * The {@link JwtAccessTokenConverter} will verify the JWS in the following step sequence:
  * <br>
  * <br>
@@ -81,236 +81,235 @@ import java.util.List;
  * <br>
  * <br>
  *
+ * @author Joe Grandja
  * @see JwtTokenStore
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7517">JSON Web Key (JWK)</a>
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7519">JSON Web Token (JWT)</a>
  * @see <a target="_blank" href="https://tools.ietf.org/html/rfc7515">JSON Web Signature (JWS)</a>
- *
- * @author Joe Grandja
  */
 public final class JwkTokenStore implements TokenStore {
-	private final TokenStore delegate;
+    private final TokenStore delegate;
 
-	/**
-	 * Creates a new instance using the provided URL as the location for the JWK Set.
-	 *
-	 * @param jwkSetUrl the JWK Set URL
-	 */
-	public JwkTokenStore(String jwkSetUrl) {
-		this(Arrays.asList(jwkSetUrl));
-	}
+    /**
+     * Creates a new instance using the provided URL as the location for the JWK Set.
+     *
+     * @param jwkSetUrl the JWK Set URL
+     */
+    public JwkTokenStore(String jwkSetUrl) {
+        this(Arrays.asList(jwkSetUrl));
+    }
 
-	/**
-	 * Creates a new instance using the provided URLs as the location for the JWK Sets.
-	 *
-	 * @param jwkSetUrls the JWK Set URLs
-	 */
-	public JwkTokenStore(List<String> jwkSetUrls) {
-		this(jwkSetUrls, null, null);
-	}
+    /**
+     * Creates a new instance using the provided URLs as the location for the JWK Sets.
+     *
+     * @param jwkSetUrls the JWK Set URLs
+     */
+    public JwkTokenStore(List<String> jwkSetUrls) {
+        this(jwkSetUrls, null, null);
+    }
 
-	/**
-	 * Creates a new instance using the provided URL as the location for the JWK Set
-	 * and a custom {@link AccessTokenConverter}.
-	 *
-	 * @param jwkSetUrl the JWK Set URL
-	 * @param accessTokenConverter a custom {@link AccessTokenConverter}
-	 */
-	public JwkTokenStore(String jwkSetUrl, AccessTokenConverter accessTokenConverter) {
-		this(jwkSetUrl, accessTokenConverter, null);
-	}
+    /**
+     * Creates a new instance using the provided URL as the location for the JWK Set
+     * and a custom {@link AccessTokenConverter}.
+     *
+     * @param jwkSetUrl            the JWK Set URL
+     * @param accessTokenConverter a custom {@link AccessTokenConverter}
+     */
+    public JwkTokenStore(String jwkSetUrl, AccessTokenConverter accessTokenConverter) {
+        this(jwkSetUrl, accessTokenConverter, null);
+    }
 
-	/**
-	 * Creates a new instance using the provided URL as the location for the JWK Set
-	 * and a custom {@link JwtClaimsSetVerifier}.
-	 *
-	 * @param jwkSetUrl the JWK Set URL
-	 * @param jwtClaimsSetVerifier a custom {@link JwtClaimsSetVerifier}
-	 */
-	public JwkTokenStore(String jwkSetUrl, JwtClaimsSetVerifier jwtClaimsSetVerifier) {
-		this(jwkSetUrl, null, jwtClaimsSetVerifier);
-	}
+    /**
+     * Creates a new instance using the provided URL as the location for the JWK Set
+     * and a custom {@link JwtClaimsSetVerifier}.
+     *
+     * @param jwkSetUrl            the JWK Set URL
+     * @param jwtClaimsSetVerifier a custom {@link JwtClaimsSetVerifier}
+     */
+    public JwkTokenStore(String jwkSetUrl, JwtClaimsSetVerifier jwtClaimsSetVerifier) {
+        this(jwkSetUrl, null, jwtClaimsSetVerifier);
+    }
 
-	/**
-	 * Creates a new instance using the provided URL as the location for the JWK Set
-	 * and a custom {@link AccessTokenConverter} and {@link JwtClaimsSetVerifier}.
-	 *
-	 * @param jwkSetUrl the JWK Set URL
-	 * @param accessTokenConverter a custom {@link AccessTokenConverter}
-	 * @param jwtClaimsSetVerifier a custom {@link JwtClaimsSetVerifier}
-	 */
-	public JwkTokenStore(String jwkSetUrl, AccessTokenConverter accessTokenConverter,
-						 JwtClaimsSetVerifier jwtClaimsSetVerifier) {
+    /**
+     * Creates a new instance using the provided URL as the location for the JWK Set
+     * and a custom {@link AccessTokenConverter} and {@link JwtClaimsSetVerifier}.
+     *
+     * @param jwkSetUrl            the JWK Set URL
+     * @param accessTokenConverter a custom {@link AccessTokenConverter}
+     * @param jwtClaimsSetVerifier a custom {@link JwtClaimsSetVerifier}
+     */
+    public JwkTokenStore(String jwkSetUrl, AccessTokenConverter accessTokenConverter,
+                         JwtClaimsSetVerifier jwtClaimsSetVerifier) {
 
-		this(Arrays.asList(jwkSetUrl), accessTokenConverter, jwtClaimsSetVerifier);
-	}
+        this(Arrays.asList(jwkSetUrl), accessTokenConverter, jwtClaimsSetVerifier);
+    }
 
-	/**
-	 * Creates a new instance using the provided URLs as the location for the JWK Sets
-	 * and a custom {@link AccessTokenConverter} and {@link JwtClaimsSetVerifier}.
-	 *
-	 * @param jwkSetUrls the JWK Set URLs
-	 * @param accessTokenConverter a custom {@link AccessTokenConverter}
-	 * @param jwtClaimsSetVerifier a custom {@link JwtClaimsSetVerifier}
-	 */
-	public JwkTokenStore(List<String> jwkSetUrls, AccessTokenConverter accessTokenConverter,
-						 JwtClaimsSetVerifier jwtClaimsSetVerifier) {
+    /**
+     * Creates a new instance using the provided URLs as the location for the JWK Sets
+     * and a custom {@link AccessTokenConverter} and {@link JwtClaimsSetVerifier}.
+     *
+     * @param jwkSetUrls           the JWK Set URLs
+     * @param accessTokenConverter a custom {@link AccessTokenConverter}
+     * @param jwtClaimsSetVerifier a custom {@link JwtClaimsSetVerifier}
+     */
+    public JwkTokenStore(List<String> jwkSetUrls, AccessTokenConverter accessTokenConverter,
+                         JwtClaimsSetVerifier jwtClaimsSetVerifier) {
 
-		JwkDefinitionSource jwkDefinitionSource = new JwkDefinitionSource(jwkSetUrls);
-		JwkVerifyingJwtAccessTokenConverter jwtVerifyingAccessTokenConverter =
-				new JwkVerifyingJwtAccessTokenConverter(jwkDefinitionSource);
-		if (accessTokenConverter != null) {
-			jwtVerifyingAccessTokenConverter.setAccessTokenConverter(accessTokenConverter);
-		}
-		if (jwtClaimsSetVerifier != null) {
-			jwtVerifyingAccessTokenConverter.setJwtClaimsSetVerifier(jwtClaimsSetVerifier);
-		}
-		this.delegate = new JwtTokenStore(jwtVerifyingAccessTokenConverter);
-	}
+        JwkDefinitionSource jwkDefinitionSource = new JwkDefinitionSource(jwkSetUrls);
+        JwkVerifyingJwtAccessTokenConverter jwtVerifyingAccessTokenConverter =
+                new JwkVerifyingJwtAccessTokenConverter(jwkDefinitionSource);
+        if (accessTokenConverter != null) {
+            jwtVerifyingAccessTokenConverter.setAccessTokenConverter(accessTokenConverter);
+        }
+        if (jwtClaimsSetVerifier != null) {
+            jwtVerifyingAccessTokenConverter.setJwtClaimsSetVerifier(jwtClaimsSetVerifier);
+        }
+        this.delegate = new JwtTokenStore(jwtVerifyingAccessTokenConverter);
+    }
 
-	/**
-	 * Delegates to the internal instance {@link JwtTokenStore#readAuthentication(OAuth2AccessToken)}.
-	 *
-	 * @param token the access token
-	 * @return the {@link OAuth2Authentication} representation of the access token
-	 */
-	@Override
-	public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
-		return this.delegate.readAuthentication(token);
-	}
+    /**
+     * Delegates to the internal instance {@link JwtTokenStore#readAuthentication(OAuth2AccessToken)}.
+     *
+     * @param token the access token
+     * @return the {@link OAuth2Authentication} representation of the access token
+     */
+    @Override
+    public OAuth2Authentication readAuthentication(OAuth2AccessToken token) {
+        return this.delegate.readAuthentication(token);
+    }
 
-	/**
-	 * Delegates to the internal instance {@link JwtTokenStore#readAuthentication(String)}.
-	 *
-	 * @param tokenValue the access token value
-	 * @return the {@link OAuth2Authentication} representation of the access token
-	 */
-	@Override
-	public OAuth2Authentication readAuthentication(String tokenValue) {
-		return this.delegate.readAuthentication(tokenValue);
-	}
+    /**
+     * Delegates to the internal instance {@link JwtTokenStore#readAuthentication(String)}.
+     *
+     * @param tokenValue the access token value
+     * @return the {@link OAuth2Authentication} representation of the access token
+     */
+    @Override
+    public OAuth2Authentication readAuthentication(String tokenValue) {
+        return this.delegate.readAuthentication(tokenValue);
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * Delegates to the internal instance {@link JwtTokenStore#readAccessToken(String)}.
-	 *
-	 * @param tokenValue the access token value
-	 * @return the {@link OAuth2AccessToken} representation of the access token value
-	 */
-	@Override
-	public OAuth2AccessToken readAccessToken(String tokenValue) {
-		return this.delegate.readAccessToken(tokenValue);
-	}
+    /**
+     * Delegates to the internal instance {@link JwtTokenStore#readAccessToken(String)}.
+     *
+     * @param tokenValue the access token value
+     * @return the {@link OAuth2AccessToken} representation of the access token value
+     */
+    @Override
+    public OAuth2AccessToken readAccessToken(String tokenValue) {
+        return this.delegate.readAccessToken(tokenValue);
+    }
 
-	/**
-	 * Delegates to the internal instance {@link JwtTokenStore#removeAccessToken(OAuth2AccessToken)}.
-	 *
-	 * @param token the access token
-	 */
-	@Override
-	public void removeAccessToken(OAuth2AccessToken token) {
-		this.delegate.removeAccessToken(token);
-	}
+    /**
+     * Delegates to the internal instance {@link JwtTokenStore#removeAccessToken(OAuth2AccessToken)}.
+     *
+     * @param token the access token
+     */
+    @Override
+    public void removeAccessToken(OAuth2AccessToken token) {
+        this.delegate.removeAccessToken(token);
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public void storeRefreshToken(OAuth2RefreshToken refreshToken, OAuth2Authentication authentication) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public OAuth2RefreshToken readRefreshToken(String tokenValue) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public OAuth2RefreshToken readRefreshToken(String tokenValue) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public OAuth2Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public OAuth2Authentication readAuthenticationForRefreshToken(OAuth2RefreshToken token) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public void removeRefreshToken(OAuth2RefreshToken token) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public void removeRefreshToken(OAuth2RefreshToken token) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken refreshToken) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public void removeAccessTokenUsingRefreshToken(OAuth2RefreshToken refreshToken) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public OAuth2AccessToken getAccessToken(OAuth2Authentication authentication) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String userName) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public Collection<OAuth2AccessToken> findTokensByClientIdAndUserName(String clientId, String userName) {
+        throw this.operationNotSupported();
+    }
 
-	/**
-	 * This operation is not applicable for a Resource Server
-	 * and if called, will throw a {@link JwkException}.
-	 *
-	 * @throws JwkException reporting this operation is not supported
-	 */
-	@Override
-	public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
-		throw this.operationNotSupported();
-	}
+    /**
+     * This operation is not applicable for a Resource Server
+     * and if called, will throw a {@link JwkException}.
+     *
+     * @throws JwkException reporting this operation is not supported
+     */
+    @Override
+    public Collection<OAuth2AccessToken> findTokensByClientId(String clientId) {
+        throw this.operationNotSupported();
+    }
 
-	private JwkException operationNotSupported() {
-		return new JwkException("This operation is not supported.");
-	}
+    private JwkException operationNotSupported() {
+        return new JwkException("This operation is not supported.");
+    }
 }

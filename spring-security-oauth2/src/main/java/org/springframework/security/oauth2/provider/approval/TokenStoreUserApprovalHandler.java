@@ -40,7 +40,7 @@ public class TokenStoreUserApprovalHandler implements UserApprovalHandler, Initi
     private static Log logger = LogFactory.getLog(TokenStoreUserApprovalHandler.class);
 
     private String approvalParameter = OAuth2Utils.USER_OAUTH_APPROVAL;
-	
+
     private TokenStore tokenStore;
 
     private ClientDetailsService clientDetailsService;

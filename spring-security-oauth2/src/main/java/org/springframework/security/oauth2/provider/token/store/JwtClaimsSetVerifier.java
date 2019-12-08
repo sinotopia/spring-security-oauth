@@ -25,17 +25,17 @@ import java.util.Map;
  * not before (nbf), issuer (iss), audience (aud), subject (sub), etc.
  *
  * @author Joe Grandja
- * @since 2.2
  * @see JwtAccessTokenConverter
+ * @since 2.2
  */
 public interface JwtClaimsSetVerifier {
 
-	/**
-	 * Verify the claim(s) in the JWT Claims Set.
-	 *
-	 * @param claims the JWT Claims Set
-	 * @throws InvalidTokenException if at least one claim failed verification
-	 */
-	void verify(Map<String, Object> claims) throws InvalidTokenException;
+    /**
+     * Verify the claim(s) in the JWT Claims Set.
+     *
+     * @param claims the JWT Claims Set
+     * @throws InvalidTokenException if at least one claim failed verification
+     */
+    void verify(Map<String, Object> claims) throws InvalidTokenException;
 
 }
