@@ -12,27 +12,10 @@
  */
 package org.springframework.security.oauth2.provider.authentication;
 
-import java.io.IOException;
-
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
-import org.springframework.security.authentication.AuthenticationEventPublisher;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +25,11 @@ import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEn
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.util.Assert;
+
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * A pre-authentication filter for OAuth2 protected resources. Extracts an OAuth2 token from the incoming request and
@@ -114,10 +102,12 @@ public class OAuth2AuthenticationProcessingFilter implements Filter, Initializin
         this.authenticationDetailsSource = authenticationDetailsSource;
     }
 
+    @Override
     public void afterPropertiesSet() {
         Assert.state(authenticationManager != null, "AuthenticationManager is required");
     }
 
+    @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
             ServletException {
 
@@ -181,16 +171,21 @@ public class OAuth2AuthenticationProcessingFilter implements Filter, Initializin
         return true;
     }
 
+    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
 
+    @Override
     public void destroy() {
     }
 
     private static final class NullEventPublisher implements AuthenticationEventPublisher {
+
+        @Override
         public void publishAuthenticationFailure(AuthenticationException exception, Authentication authentication) {
         }
 
+        @Override
         public void publishAuthenticationSuccess(Authentication authentication) {
         }
     }

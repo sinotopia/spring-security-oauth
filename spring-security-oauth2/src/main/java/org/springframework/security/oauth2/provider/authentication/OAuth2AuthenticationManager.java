@@ -57,6 +57,7 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
         this.tokenServices = tokenServices;
     }
 
+    @Override
     public void afterPropertiesSet() {
         Assert.state(tokenServices != null, "TokenServices are required");
     }
@@ -72,6 +73,7 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
      * @return an {@link OAuth2Authentication}
      * @see org.springframework.security.authentication.AuthenticationManager#authenticate(org.springframework.security.core.Authentication)
      */
+    @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         if (authentication == null) {

@@ -70,4 +70,6 @@ public final class OAuth2AccessTokenJackson2Serializer extends StdSerializer<OAu
 		}
 		jgen.writeEndObject();
 	}
+
+
 }
